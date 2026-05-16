@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bo.K Platform — Multi-Language</title>
+    <style>
+        :root { --dark: #0d0d1a; --lavender: #b39ddb; --gold: #ffd700; --neon: #8a2be2; }
+        body { background-color: var(--dark); color: #fff; font-family: Tahoma, Arial, sans-serif; margin: 0; padding: 20px; transition: all 0.3s ease; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        
+        /* بەشی سەرەوە و دوگمەکانی زمان */
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .lang-switcher button { background: #1a1a3a; border: 1px solid var(--gold); color: #fff; padding: 5px 10px; cursor: pointer; border-radius: 4px; margin-left: 5px; }
+        .lang-switcher button:hover { background: var(--neon); }
+        
+        nav { display: flex; gap: 15px; background: #1a1a3a; padding: 10px; border-radius: 8px; margin-bottom: 20px; }
+        nav button { background: none; border: 1px solid var(--lavender); color: #fff; padding: 10px 20px; cursor: pointer; border-radius: 5px; }
+        nav button:hover { background: var(--neon); }
+        
+        .section { display: none; background: #151530; padding: 20px; border-radius: 12px; border: 1px solid #2a2a5a; }
+        .active { display: block; }
+        .card { background: #1e1e3f; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 5px solid var(--gold); }
+        .btn-pay { background: #00e676; color: #000; padding: 8px 15px; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        textarea { width: 100%; padding: 10px; margin: 10px 0; background: #0d0d1a; border: 1px solid var(--lavender); color: #fff; border-radius: 5px; box-sizing: border-box; }
+        #ai-response { background: #050510; padding: 15px; border-radius: 5px; min-height: 50px; border: 1px dashed var(--gold); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h2 id="txt-title">🚀 پلاتفۆرمی Bo.K <span style="font-size: 14px; color: var(--lavender);">By K.KOD Security</span></h2>
+        <!-- دوگمەکانی گۆڕینی زمان -->
+        <div class="lang-switcher">
+            <button onclick="changeLanguage('ku')">Kurdî</button>
+            <button onclick="changeLanguage('en')">English</button>
+            <button onclick="changeLanguage('ar')">العربية</button>
+        </div>
+    </header>
+    
+    <nav>
+        <button id="btn-store" onclick="showSection('store')">📦 کۆگای ئەپەکان</button>
+        <button id="btn-kjyr" onclick="showSection('kjyr')">🧠 K.Jyr (ژیری دەستکرد)</button>
+    </nav>
+
+    <!-- بەشی کۆگا -->
+    <div id="store" class="section active">
+        <h3 id="txt-catalog-title">کەتەلۆگی بەرهەمە دیجیتاڵییەکان</h3>
+        <div class="card">
+            <h4 id="txt-prod-title">ئەپی بەڕێوببردنی K-Management</h4>
+            <p id="txt-prod-desc">سیستمێکی پێشکەوتوو بۆ کۆنترۆڵکردنی فرۆشتن و عەمبار.</p>
+            <p><span id="txt-price-label">نرخ:</span> <b>50,000 IQD</b></p>
+            <button class="btn-pay" id="btn-buy" onclick="payFastPay()">💳 کڕین بە FastPay</button>
+        </div>
+    </div>
+
+    <!-- بەشی ژیری دەستکرد -->
+    <div id="kjyr" class="section">
+        <h3 id="txt-ai-title">🧠 بزوێنەری K.Jyr (Llama 3 Secure)</h3>
+        <p id="txt-ai-prompt">پرسیارەکەت بنووسە بۆ یارمەتیدانی کارگەی نەرمەکاڵاکەت:</p>
+        <textarea id="ai-input" rows="4" placeholder="..."></textarea>
+        <button class="btn-pay" id="btn-ai-send" style="background: var(--neon); color:#fff;" onclick="askAI()">ناردن بۆ K.Jyr</button>
+        <h4 id="txt-ai-status">وەڵامی ژیری دەستکرد:</h4>
+        <div id="ai-response">...</div>
+    </div>
+</div>
+
+<script>
+    // فەرهەنگی زمانەکان (Translations Dictionary)
+    const translations = {
+        ku: {
+            title: "🚀 پلاتفۆرمی Bo.K",
+            btnStore: "📦 کۆگای ئەپەکان",
+            btnKjyr: "🧠 K.Jyr (ژیری دەستکرد)",
+            catalogTitle: "کەتەلۆگی بەرهەمە دیجیتاڵییەکان",
+            prodTitle: "ئەپی بەڕێوببردنی K-Management",
+            prodDesc: "سیستمێکی پێشکەوتوو بۆ کۆنترۆڵکردنی فرۆشتن و عەمبار.",
+            priceLabel: "نرخ:",
+            btnBuy: "💳 کڕین بە FastPay",
+            aiTitle: "🧠 بزوێنەری K.Jyr (Llama 3 Secure)",
+            aiPrompt: "پرسیارەکەت بنووسە بۆ یارمەتیدانی کارگەی نەرمەکاڵاکەت:",
+            aiInputPlaceholder: "کۆدەکەت لێرە دابنێ یان پرسیار بکە...",
+            aiStatus: "وەڵامی ژیری دەستکرد:",
+            aiInitial: "بۆ پێشوازی لە پرسیارەکەت ئامادەم...",
+            aiThinking: "K.Jyr بیر دەکاتەوە...",
+            aiError: "هەڵە ڕوویدا لە پەیوەندی بە سێرڤەرەوە."
+        },
+        en: {
+            title: "🚀 Bo.K Platform",
+            btnStore: "📦 App Store",
+            btnKjyr: "🧠 K.Jyr AI Engine",
+            catalogTitle: "Digital Products Catalog",
+            prodTitle: "K-Management App",
+            prodDesc: "An advanced system for sales and inventory control.",
+            priceLabel: "Price:",
+            btnBuy: "💳 Buy with FastPay",
+            aiTitle: "🧠 K.Jyr Engine (Llama 3 Secure)",
+            aiPrompt: "Write your question to help your software factory:",
+            aiInputPlaceholder: "Paste your code or ask a question here...",
+            aiStatus: "AI Response:",
+            aiInitial: "I am ready for your questions...",
+            aiThinking: "K.Jyr is thinking...",
+            aiError: "Error connecting to the server."
+        },
+        ar: {
+            title: "🚀 منصة Bo.K",
+            btnStore: "📦 متجر التطبيقات",
+            btnKjyr: "🧠 K.Jyr (الذكاء الاصطناعي)",
+            catalogTitle: "كتالوج المنتجات الرقمية",
+            prodTitle: "تطبيق إدارة K-Management",
+            prodDesc: "نظام متطور للتحكم في المبيعات والمخزون.",
+            priceLabel: "السعر:",
+            btnBuy: "💳 الشراء بواسطة FastPay",
+            aiTitle: "🧠 محرك K.Jyr (Llama 3 Secure)",
+            aiPrompt: "اكتب سؤالك لمساعدة مصنع البرمجيات الخاص بك:",
+            aiInputPlaceholder: "ضع الكود الخاص بك أو اسأل هنا...",
+            aiStatus: "رد الذكاء الاصطناعي:",
+            aiInitial: "أنا مستعد لاستقبال أسئلتك...",
+            aiThinking: "K.Jyr يفكر الآن...",
+            aiError: "حدث خطأ في الاتصال بالسيرفر."
+        }
+    };
+
+    let currentLang = 'ku';
+
+    function changeLanguage(lang) {
+        currentLang = lang;
+        const t = translations[lang];
+        
+        // گۆڕینی ئاڕاستەی لاپەڕە (RTL یان LTR)
+        if (lang === 'en') {
+            document.documentElement.dir = 'ltr';
+            document.documentElement.lang = 'en';
+        } else {
+            document.documentElement.dir = 'rtl';
+            document.documentElement.lang = lang;
+        }
+
+        // دانانی دەقە نوێیەکان
+        document.getElementById('txt-title').innerHTML = `${t.title} <span style="font-size: 14px; color: var(--lavender);">By K.KOD Security</span>`;
+        document.getElementById('btn-store').innerText = t.btnStore;
+        document.getElementById('btn-map').innerText = t.btnMap;
+        document.getElementById('btn-kjyr').innerText = t.btnKjyr;
+        document.getElementById('txt-catalog-title').innerText = t.catalogTitle;
+        document.getElementById('txt-prod-title').innerText = t.prodTitle;
+        document.getElementById('txt-prod-desc').innerText = t.prodDesc;
+        document.getElementById('txt-price-label').innerText = t.priceLabel;
+        document.getElementById('btn-buy').innerText = t.btnBuy;
+        document.getElementById('txt-ai-title').innerText = t.aiTitle;
+        document.getElementById('txt-ai-prompt').innerText = t.aiPrompt;
+        document.getElementById('ai-input').placeholder = t.aiInputPlaceholder;
+        document.getElementById('txt-ai-status').innerText = t.aiStatus;
+        document.getElementById('ai-response').innerText = t.aiInitial;
+    }
+
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function payFastPay() {
+        alert("Redirecting to FastPay...");
+        window.location.href = "https://www.fastpay.cash";
+    }
+
+    async function askAI() {
+        const prompt = document.getElementById('ai-input').value;
+        const responseDiv = document.getElementById('ai-response');
+        responseDiv.innerText = translations[currentLang].aiThinking;
+
+        try {
+            // ناردنی داواکاری بۆ سێرڤەری VPS
+            const res = await fetch('http://YOUR_VPS_IP:5000/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: prompt, lang: currentLang })
+            });
+            const data = await res.json();
+            responseDiv.innerText = data.reply;
+        } catch (error) {
+            responseDiv.innerText = translations[currentLang].aiError;
+        }
+    }
+
+    // دەستپێکردنی ماڵپەڕەکە بە زمانی کوردی لە سەرەتادا
+    changeLanguage('ku');
+</script>
+</body>
+</html>
